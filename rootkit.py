@@ -18,3 +18,20 @@ class _nmap:
 					if (nmap_data["scan"][host]["tcp"][self.port]["cpe"]=="cpe:/o:cisco:ios"):
 						self.scanned_ips.append(host)
 		return self.scanned.ips
+
+class parsing:
+	def __init__(self,ips):
+		self.ips=ips
+
+	def sort_ip_range(self):
+		split_ips=[self.ips[i] for i in range(len(self.ips))]
+		A=[int split_ips[i][0]) for i in range(len(self.ips))]
+		B=[int split_ips[i][1]) for i in range(len(self.ips))]
+		C=[int split_ips[i][2]) for i in range(len(self.ips))]
+		D=[int split_ips[i][3]) for i in range(len(self.ips))]
+		A.sort()
+		B.sort()
+		C.sort()
+		D.sort()
+		SORTED=[str(A[i])+"."str(B[i])+"."str(C[i])+"."+str(D[i]) for i in range(len(split_ips))]
+		return SORTED

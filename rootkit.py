@@ -18,7 +18,7 @@ class _nmap:
 				if (nmap_data["scan"][host]["tcp"][self.port]["name"]==self.port_dict[self.port]):
 					if (nmap_data["scan"][host]["tcp"][self.port]["cpe"]=="cpe:/o:cisco:ios"):
 						self.scanned_ips.append(host)
-		return self.scanned.ips
+		return self.scanned_ips
 
 class parsing:
 	def __init__(self,ips):

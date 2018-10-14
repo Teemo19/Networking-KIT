@@ -5,7 +5,7 @@ class _nmap:
 	def __init__(self,segment,port):
 		self.segment=segment
 		self.port=port
-		self.port_dic={22:"ssh",23:"telnet"}
+		self.port_dict={22:"ssh",23:"telnet"}
 		self.scanned_ips=[]
 
 	def scan_segment(self):

@@ -5,8 +5,8 @@ def main():
 	port=str(raw_input("Port: "))
 	user=(raw_input("User: "))
 	passwd=(raw_input("Pass: "))
-	ips_port_active=rootkit.libnmap._nmap(segment,port).analyze_nmap()
-	telnet_con=rootkit.libtelnet._telnet(ips_port_active,user,passwd,device.data)
+	ips_port_active=rootkit._nmap(segment,port).analyze_nmap()
+	telnet_con=rootkit._telnet(ips_port_active,user,passwd,device.data)
 	telnet_auth=telnet.con.telnet_conection()
 
 if __name__=='__main__':

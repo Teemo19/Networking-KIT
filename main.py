@@ -9,5 +9,5 @@ def main():
 	telnet_con=rootkit.libtelnet._telnet(ips_port_active,user,passwd,device.data)
 	telnet_auth=telnet.con.telnet_conection()
 
-if name__=='__main__':
+if __name__=='__main__':
 	main()

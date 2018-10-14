@@ -26,15 +26,15 @@ class parsing:
 
 	def sort_ip_range(self):
 		split_ips=[self.ips[i] for i in range(len(self.ips))]
-		A=[int split_ips[i][0]) for i in range(len(self.ips))]
-		B=[int split_ips[i][1]) for i in range(len(self.ips))]
-		C=[int split_ips[i][2]) for i in range(len(self.ips))]
-		D=[int split_ips[i][3]) for i in range(len(self.ips))]
+		A=[int(split_ips[i][0]) for i in range(len(self.ips))]
+		B=[int(split_ips[i][1]) for i in range(len(self.ips))]
+		C=[int(split_ips[i][2]) for i in range(len(self.ips))]
+		D=[int(split_ips[i][3]) for i in range(len(self.ips))]
 		A.sort()
 		B.sort()
 		C.sort()
 		D.sort()
-		SORTED=[str(A[i])+"."str(B[i])+"."str(C[i])+"."+str(D[i]) for i in range(len(split_ips))]
+		SORTED=[str(A[i])+"."+str(B[i])+"."+str(C[i])+"."+str(D[i]) for i in range(len(split_ips))]
 		return SORTED
 
 class _telnet:

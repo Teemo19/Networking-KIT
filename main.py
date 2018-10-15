@@ -1,6 +1,8 @@
 import rootkit
 class device:
-	data=["terminal len 0","exit"]
+	community=str(raw_input("community:"))
+	find_device=["ter len 0","show version | inc Model Number","exit"]
+	switch=["terminal len 0","show run | inc snmp-server community","exit"]
 
 def main():
 	segment=str(raw_input("Network ID: "))
@@ -10,8 +12,9 @@ def main():
 	ips_port_active=rootkit._nmap(segment,port).analyze_nmap()
 	telnet_con=rootkit._telnet(ips_port_active,user,passwd)
 	telnet_auth=telnet_con.telnet_conection()
-	result=telnet_con.write_telnet(telnet_auth,device.data)
-	print(result)
+	result=telnet_con.write_telnet(telnet_auth,device.switch)
+	configured_devices=telnet_con.analyze_snmp(result,device.community)
+	print(configured_devices)
 	input("stop result")
 
 if __name__=='__main__':

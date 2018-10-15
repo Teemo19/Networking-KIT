@@ -18,9 +18,9 @@ class _nmap:
 				if (nmap_data["scan"][host]["tcp"][self.port]["name"]==self.port_dict[self.port]):
 					if (nmap_data["scan"][host]["tcp"][self.port]["cpe"]=="cpe:/o:cisco:ios"):
 						self.scanned_ips.append(host)
-		return parsing(self.scanned_ips).sort_ip_range()
+		return _parsing(self.scanned_ips).sort_ip_range()
 
-class parsing:
+class _parsing:
 	def __init__(self,ips):
 		self.ips=ips
 
@@ -103,9 +103,8 @@ class _telnet:
 				result+=remote_conn.read_some()
 				time.sleep(0.1)
 			except:
-				break
+				pass
 		output.append([ip,result])
-
 
 	def write_telnet(self,telnet_autorization,data):
 		output=[]
@@ -116,3 +115,20 @@ class _telnet:
 			Threads[i].start()
 		Threads=[Threads[i].join() for i in range(len(telnet_autorization))]
 		return output
+
+	def analyze_snmp(self,result,community):
+		yes=[]
+		no=[]
+		output=[]
+		for i in range(len(result)):
+			ip=result[i][0]
+			data=result[i][1]
+			res=(data[data.find("show run | inc snmp-server community"):len(data)])
+			if(res.find("snmp-server community "+community+" RO")>=0):
+				yes.append([ip,True])
+			else:
+				no.append([ip,False])
+		output.extend(yes)
+		output.extend(no)
+		return output
+

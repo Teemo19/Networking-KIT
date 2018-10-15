@@ -18,14 +18,14 @@ class _nmap:
 				if (nmap_data["scan"][host]["tcp"][self.port]["name"]==self.port_dict[self.port]):
 					if (nmap_data["scan"][host]["tcp"][self.port]["cpe"]=="cpe:/o:cisco:ios"):
 						self.scanned_ips.append(host)
-		return self.scanned_ips
+		return parsing(self.scanned_ips).sort_ip_range()
 
 class parsing:
 	def __init__(self,ips):
 		self.ips=ips
 
 	def sort_ip_range(self):
-		split_ips=[self.ips[i] for i in range(len(self.ips))]
+		split_ips=[self.ips[i].split(".") for i in range(len(self.ips))]
 		A=[int(split_ips[i][0]) for i in range(len(self.ips))]
 		B=[int(split_ips[i][1]) for i in range(len(self.ips))]
 		C=[int(split_ips[i][2]) for i in range(len(self.ips))]
@@ -45,12 +45,12 @@ class _telnet:
 
 	def invoke_shell(self,tn):
 		read=str(tn.read_some())
-		while(1):
+		while(1): #receive data until finish loading
 			try:
 				read+=str(tn.read_some())
 			except:
 				break
-		if(read.find("Username: ")>=0 or read.nind("Password:")>=0):
+		if(read.find("Username: ")>=0 or read.find("Password:")>=0):
 			tn.write(self.user+"\n")
 			time.sleep(0.1)
 			read_pwd=tn.read_some()
@@ -74,12 +74,12 @@ class _telnet:
 			return None
 
 	def telnet_autorization(self,ip,output):
-		#try:
-		telnet_client=Telnet(ip,23,10)
-		remote_conn=_telnet.invoke_shell(self,telnet_client)
-		output.append([ip,remote_conn])
-		#except:
-			#output.append([ip,None])
+		try:
+			telnet_client=Telnet(ip,23,10)
+			remote_conn=_telnet.invoke_shell(self,telnet_client)
+			output.append([ip,remote_conn])
+		except:
+			output.append([ip,None])
 
 	def telnet_conection(self):
 		Threads=[]
@@ -91,7 +91,7 @@ class _telnet:
 		Threads=[Threads[i].join() for i in range(len(self.ips))]
 		return output
 
-	def write_telnet_work(self,remote_conn,data,output):
+	def write_telnet_work(self,telnet_autorization,data,output):
 		ip=telnet_autorization[0]
 		remote_conn=telnet_autorization[1]
 		for i in range(len(data)):
@@ -103,10 +103,16 @@ class _telnet:
 				result+=remote_conn.read_some()
 				time.sleep(0.1)
 			except:
-				pass
-		output.append([ip.result])
+				break
+		output.append([ip,result])
 
-	def write_telnet(self,telnet_autorization):
+
+	def write_telnet(self,telnet_autorization,data):
+		output=[]
+		Threads=[]
 		for i in range(len(telnet_autorization)):
-			t=threading.Thread(target=write_telnet_work,args=(remote_conn,data,output,))
-
+			t=threading.Thread(target=_telnet.write_telnet_work,args=(self,telnet_autorization[i],data,output,))
+			Threads.append(t)
+			Threads[i].start()
+		Threads=[Threads[i].join() for i in range(len(telnet_autorization))]
+		return output

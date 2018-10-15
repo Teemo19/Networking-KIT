@@ -1,4 +1,6 @@
 import rootkit
+class device:
+	data=["terminal len 0"]
 
 def main():
 	segment=str(raw_input("Network ID: "))
@@ -7,9 +9,9 @@ def main():
 	passwd=str(raw_input("Pass: "))
 	ips_port_active=rootkit._nmap(segment,port).analyze_nmap()
 	print(ips_port_active)
-	raw_input("stop")
-	telnet_con=rootkit._telnet(ips_port_active,user,passwd,device.data)
-	telnet_auth=telnet.con.telnet_conection()
+	telnet_con=rootkit._telnet(ips_port_active,user,passwd).telnet_conection()
+	print(telnet_con)
+	input("stop telnet_con")
 
 if __name__=='__main__':
 	main()

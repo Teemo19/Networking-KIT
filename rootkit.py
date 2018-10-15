@@ -55,7 +55,7 @@ class _telnet:
 			time.sleep(0.1)
 			read_pwd=tn.read_some()
 			if(read_pwd.find("Password:")>=0):
-				tn.write(sef.passwd+"\n")
+				tn.write(self.passwd+"\n")
 				time.sleep(0.1)
 				read_login=tn.read_some()
 		try:
@@ -74,15 +74,16 @@ class _telnet:
 			return None
 
 	def telnet_autorization(self,ip,output):
-		try:
-			telnet_client=Telnet(ip,23,10)
-			remote_conn=_telnet.invoke_shell(self,telnet_client)
-			output.append([ip,remote_conn])
-		except:
-			output.append([ip,None])
+		#try:
+		telnet_client=Telnet(ip,23,10)
+		remote_conn=_telnet.invoke_shell(self,telnet_client)
+		output.append([ip,remote_conn])
+		#except:
+			#output.append([ip,None])
 
 	def telnet_conection(self):
 		Threads=[]
+		output=[]
 		for i in range(len(self.ips)):
 			t=threading.Thread(target=_telnet.telnet_autorization,args=(self,self.ips[i],output,))
 			Threads.append(t)

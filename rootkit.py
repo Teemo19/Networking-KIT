@@ -1,5 +1,19 @@
-import nmap,time,threading
+import nmap,time,threading,sys
 from telnetlib import Telnet
+
+
+class _intro:
+	SH_YELLOW = "\033[33m" if "win" not in sys.platform else ""
+	SH_GREEN = "\033[92m" if "win" not in sys.platform else ""
+	output = SH_YELLOW + """
+	_______________________________________
+	   _____           	    __
+	   |____  |\ | |\  /|  |__|
+ 	   _____| | \| | \/ |  |
+
+              CONFIGURATOR V.1.0.0
+	_______________________________________
+	""" +SH_YELLOW
 
 class _nmap:
 	def __init__(self,segment,port):
@@ -25,6 +39,7 @@ class _parsing:
 		self.ips=ips
 
 	def sort_ip_range(self):
+		print("ordenando ips..")
 		split_ips=[self.ips[i].split(".") for i in range(len(self.ips))]
 		A=[int(split_ips[i][0]) for i in range(len(self.ips))]
 		B=[int(split_ips[i][1]) for i in range(len(self.ips))]
@@ -36,6 +51,16 @@ class _parsing:
 		D.sort()
 		SORTED=[str(A[i])+"."+str(B[i])+"."+str(C[i])+"."+str(D[i]) for i in range(len(split_ips))]
 		return SORTED
+
+	def sort_ip_plus_values(self,data):
+		print("ordenando datos..")
+		output=[]
+		for i in range(len(self.ips)):
+			for j in range(len(data)):
+				if(self.ips[i]==data[j][0]):
+					output.append(data[j])
+		return output
+
 
 class _telnet:
 	def __init__(self,ips,user,passwd):
@@ -94,17 +119,20 @@ class _telnet:
 	def write_telnet_work(self,telnet_autorization,data,output):
 		ip=telnet_autorization[0]
 		remote_conn=telnet_autorization[1]
-		for i in range(len(data)):
-			remote_conn.write(data[i]+"\n")
-			time.sleep(0.1)
-		result=""
-		while(result.find("exit")<0):
-			try:
-				result+=remote_conn.read_some()
+		if(remote_conn!=None):
+			for i in range(len(data)):
+				remote_conn.write(data[i]+"\n")
 				time.sleep(0.1)
-			except:
-				pass
-		output.append([ip,result])
+			result=""
+			while(result.find("exit")<0):
+				try:
+					result+=remote_conn.read_some()
+					time.sleep(0.1)
+				except:
+					pass
+			output.append([ip,result])
+		else:
+			output.append(ip,remote_conn)
 
 	def write_telnet(self,telnet_autorization,data):
 		output=[]
@@ -116,7 +144,7 @@ class _telnet:
 		Threads=[Threads[i].join() for i in range(len(telnet_autorization))]
 		return output
 
-	def analyze_snmp(self,result,community):
+	def analyze_snmp(self,result,community,ip_range):
 		yes=[]
 		no=[]
 		output=[]
@@ -128,7 +156,15 @@ class _telnet:
 				yes.append([ip,True])
 			else:
 				no.append([ip,False])
+				if(data==None):
+					no.append([ip,False])
 		output.extend(yes)
 		output.extend(no)
+		output=_parsing(ip_range).sort_ip_plus_values(output)
 		return output
+"""
+class excel:
+	def __init__(self):
 
+	def 
+"""
